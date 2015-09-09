@@ -1,4 +1,6 @@
-*sample-portlet*
+sample-portlet
+====
+
 This is a sample stub for a custom Liferay portlet.
 
 To make deploy with gradle:
