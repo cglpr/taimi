@@ -1,0 +1,17 @@
+node_modules/
+build/
+.gradle/
+.idea/
+.project
+*.iml
+target/
+src/main/webapp/demo/css/.sass-cache/
+.settings/
+.classpath
+.tern-project
+out/
+bower_components/
+temp/
+test_out/
+npm-debug.log
+src/test/unit/*.log
