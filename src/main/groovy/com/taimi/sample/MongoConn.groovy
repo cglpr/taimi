@@ -22,6 +22,7 @@ import org.apache.log4j.Logger
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+
 @Component
 class MongoConn {
 	Logger log = Logger.getLogger(MongoConn.class)

@@ -16,6 +16,7 @@ public class SpringContainerLoader implements ServletContextListener {
 		log.info("ServletContextListener destroyed");
 		ctx = null;
 	}
+	
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
