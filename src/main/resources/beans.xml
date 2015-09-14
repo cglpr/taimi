@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<context:annotation-config />
+
+	<context:component-scan base-package="com.taimi.sample"/>
+
+	<!-- Read jndi properties from a properties file and create jndi template for the server -->
+	<context:property-placeholder location="file:${catalina.home}/conf/sample-portlet.properties" />
+
+	<!-- MongoDbFactory takes 2 params: com.mongodb.Mongo instance and the name of the db -->
+	<bean id="mongoDbFactory" class="org.springframework.data.mongodb.core.SimpleMongoDbFactory">
+	    <constructor-arg>
+	        <ref bean="mongo"/>
+	    </constructor-arg>
+	    <constructor-arg value="test"/>
+	</bean>
+	
+	<bean id="mongo" class="com.mongodb.Mongo">
+	    <constructor-arg value="${mongodb.host}"/>
+	    <constructor-arg value="${mongodb.port}"/>
+	</bean>
+	
+	<bean id="mongoConn" class="com.taimi.sample.MongoConn">
+	</bean>
+	
+	<!-- If you want to use several Dbs then comment out the above and use these:
+	<bean id="mongo" class="com.mongodb.Mongo">
+	    <constructor-arg>
+        <list>
+            <ref bean="address1" />
+            <ref bean="address2" />                
+        </list>
+    </constructor-arg>
+	</bean>
+	<bean id="address1" class="com.mongodb.ServerAddress">
+	    <constructor-arg value="localhost"/>
+	    <constructor-arg value="27017"/>
+	</bean>
+	<bean id="address2" class="com.mongodb.ServerAddress">
+	    <constructor-arg value="some.other.host"/>
+	    <constructor-arg value="27017"/>
+	</bean>
+	 -->
+
+</beans>
