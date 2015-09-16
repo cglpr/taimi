@@ -9,6 +9,13 @@
         <footer-portlet-javascript>/js/sample-portlet.js</footer-portlet-javascript>
         <css-class-wrapper>sample-portlet</css-class-wrapper>
     </portlet>
+    <portlet>
+        <portlet-name>employee-portlet</portlet-name>  
+        <icon>/icon.png</icon>
+        <header-portlet-css>/css/employee-portlet.css</header-portlet-css>
+        <footer-portlet-javascript>/js/employee-portlet.js</footer-portlet-javascript>
+        <css-class-wrapper>employee-portlet</css-class-wrapper>
+    </portlet>
     <role-mapper>
         <role-name>administrator</role-name>
         <role-link>Administrator</role-link>

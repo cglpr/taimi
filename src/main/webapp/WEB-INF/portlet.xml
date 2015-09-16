@@ -34,4 +34,34 @@
             <role-name>user</role-name>
         </security-role-ref>
     </portlet>
+    <portlet>
+        <portlet-name>employee-portlet</portlet-name>
+        <display-name>Työntekijä Portlet</display-name>
+		<portlet-class>com.taimi.employee.EmployeePortlet</portlet-class>
+        <init-param>
+            <name>view-template</name>
+            <value>/employee/jsp/view.jsp</value>
+        </init-param>
+        <expiration-cache>0</expiration-cache>
+        <supports>
+            <mime-type>text/html</mime-type>
+        </supports>
+        <portlet-info>
+            <title>Työntekijä Portlet</title>
+            <short-title>Työntekijä Portlet</short-title>
+            <keywords>Työntekijä Portlet</keywords>
+        </portlet-info>
+        <security-role-ref>
+            <role-name>administrator</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>guest</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>power-user</role-name>
+        </security-role-ref>
+        <security-role-ref>
+            <role-name>user</role-name>
+        </security-role-ref>
+    </portlet>
 </portlet-app>
