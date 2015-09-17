@@ -12,8 +12,10 @@
     <portlet>
         <portlet-name>employee-portlet</portlet-name>  
         <icon>/icon.png</icon>
-        <header-portlet-css>/css/employee-portlet.css</header-portlet-css>
-        <footer-portlet-javascript>/js/employee-portlet.js</footer-portlet-javascript>
+        <header-portlet-css>/employee/css/employee-portlet.css</header-portlet-css>
+        <footer-portlet-javascript>/employee/js/angular.js</footer-portlet-javascript>
+		<footer-portlet-javascript>/employee/js/angular-portlet.js</footer-portlet-javascript>
+		<footer-portlet-javascript>/employee/js/employee-portlet.js</footer-portlet-javascript>
         <css-class-wrapper>employee-portlet</css-class-wrapper>
     </portlet>
     <role-mapper>

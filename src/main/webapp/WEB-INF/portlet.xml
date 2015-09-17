@@ -37,7 +37,7 @@
     <portlet>
         <portlet-name>employee-portlet</portlet-name>
         <display-name>Työntekijä Portlet</display-name>
-		<portlet-class>com.taimi.employee.EmployeePortlet</portlet-class>
+		<portlet-class>com.liferay.util.bridges.mvc.MVCPortlet</portlet-class>
         <init-param>
             <name>view-template</name>
             <value>/employee/jsp/view.jsp</value>
