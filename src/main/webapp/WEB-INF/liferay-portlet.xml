@@ -12,10 +12,13 @@
     <portlet>
         <portlet-name>employee-portlet</portlet-name>  
         <icon>/icon.png</icon>
-        <header-portlet-css>/employee/css/employee-portlet.css</header-portlet-css>
-        <footer-portlet-javascript>/employee/js/angular.js</footer-portlet-javascript>
+        <header-portlet-css>http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css</header-portlet-css>
+        <footer-portlet-javascript>http://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/employee/js/angular-portlet.js</footer-portlet-javascript>
 		<footer-portlet-javascript>/employee/js/employee-portlet.js</footer-portlet-javascript>
+		<footer-portlet-javascript>https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js</footer-portlet-javascript>
+		<footer-portlet-javascript>http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js</footer-portlet-javascript>
+		<footer-portlet-javascript>https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.4/ui-bootstrap-tpls.min.js</footer-portlet-javascript>
         <css-class-wrapper>employee-portlet</css-class-wrapper>
     </portlet>
     <role-mapper>
