@@ -17,7 +17,7 @@
 		var domNode = document.getElementById("portlet_" + portletInstanceId);
 
 		if (angularPortlets[portletId]) {
-			angular.bootstrap(domNode, ['myModule']);
+			angular.bootstrap(domNode, angularPortlets[portletId](portletInstanceId, domNode));
 		}
 	});
 })(Liferay, angular);
