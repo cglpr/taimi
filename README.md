@@ -1,12 +1,11 @@
-sample-portlet
+Liferay Playground
 ====
 
-This is a sample stub for a custom Liferay portlet.
+This is a Liferay project for technology and skills portal.
 
-To make deploy with gradle:
-Set your liferay's Tomcat directory to build.gradle in appServerDirName variable!
-e.g. 'appServerDirName = 'D:/liferay/liferay-portal-6.2-ce-ga4/tomcat-7.0.42'
-
-To build, just type gradle clean war
-
-Contains gradle wrapper (gradlew) and sonar properties for Jenkins.
++ Fetch codes and insert them to this path: ...\liferay-plugins-sdk-6.2\portlets\LiferayPlayground-portlet
++ Open Eclipse and select Import->Liferay Project from Existing Source.
++ If asks for a type, use Service Builder Portlet.
++ Make sure the Eclipse project has the name LiferayPlayground-portlet, or else angular may not work.
++ Right click Liferay server->Add and Remove. Select project in Available and move it to Configured with Add button. 
++ Start the server.
