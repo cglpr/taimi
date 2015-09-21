@@ -5,5 +5,6 @@
 	<category name="category.sample">
 		<portlet id="LiferayPlayground" />
 		<portlet id="employeeportlet"></portlet>
+		<portlet id="projectportlet"></portlet>
 	</category>
 </display>
