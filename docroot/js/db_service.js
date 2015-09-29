@@ -1,9 +1,12 @@
+// The service to be meant to access the database through RESTHeart.
+// Modified from the example of using ajax with angularjs by Ben Nadel at:
+// http://www.bennadel.com/blog/2612-using-the-http-service-in-angularjs-to-make-ajax-requests.htm
+
 	var app = angular.module('serviceModule', []);
 	// I act a repository for the remote friend collection.
     app.service(
         "dbService",
         function( $http, $q ) {
-            // Return public API.
             return({
                 addTech: addTech,
                 getTechs: getTechs
@@ -11,7 +14,6 @@
             // ---
             // PUBLIC METHODS.
             // ---
-            // I add a friend with the given name to the remote collection.
             function addTech( name ) {
                 var request = $http({
                     method: "post",
@@ -25,7 +27,6 @@
                 });
                 return( request.then( handleSuccess, handleError ) );
             }
-            // I get all of the friends in the remote collection.
             function getTechs() {
                 var request = $http({
                     method: "get",
@@ -36,14 +37,13 @@
                 });
                 return( request.then( handleTechsSuccess, handleError ) );
             }
+
             // ---
             // PRIVATE METHODS.
             // ---
-            // I transform the error response, unwrapping the application dta from
-            // the API response payload.
             function handleError( response ) {
                 // The API response from the server should be returned in a
-                // nomralized format. However, if the request was not handled by the
+                // normalized format. However, if the request was not handled by the
                 // server (or what not handles properly - ex. server error), then we
                 // may have to normalize it on our end, as best we can.
                 if (
