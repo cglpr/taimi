@@ -36,6 +36,7 @@
 							<div class="row">
 								<div class="col-md-4">{{skill.name}}</div>
 								<div class="col-md-4">{{skill.level}}</div>
+								<div class="col-md-4"><button class="btn btn-default">Poista</button></div>
 							</div>
 						</div>
 				</div>

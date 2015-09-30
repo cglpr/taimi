@@ -10,6 +10,8 @@
 				$scope.currentEmployee.skills = [$scope.techList[0]];
 				$scope.currentEmployee.skills[0].level = '3';
 				
+				$scope.removeSkill = function(skillId) {}
+				
 			}]);
 			
 			return [ empModule.name ];
