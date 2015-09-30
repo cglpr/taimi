@@ -2,6 +2,19 @@
 	angular.portlet.add("LiferayPlayground-portlet", "projectportlet",
 		function() {
 			var projModule = angular.module("projModule", []);
+			projModule.filter('shorten', function() {
+				  return function(input, uppercase) {
+				    input = input || '';
+				    if(!(input.constructor === Array)) {
+				    	return input;
+				    }
+				    var out = input[0] || "";
+					if(input.length > 1) {
+						out = out + ",...";
+					}
+				    return out;
+				  };
+				});
 			projModule.controller("ProjectController", ["$scope", function($scope) {
 				$scope.projList = [];
 				$scope.techList = ['Angularjs', 'Groovy', 'Grails', 'Java', 'Javascript', 'React', 'Spring', 'Spring-UI'];
@@ -19,13 +32,6 @@
 				$scope.getTechs = function(index) {
 					return techList;
 				};
-				$scope.techsForTable = function(proj) {
-					var t = proj.techs[0];
-					if(proj.techs.length > 1) {
-						t = t + ",...";
-					}
-					return t;
-				}
 
 			}]);			
 			return [ projModule.name ];
