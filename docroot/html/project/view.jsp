@@ -55,7 +55,7 @@
 		<tr ng-repeat="proj in projList">
 			<td >{{ proj.name }}</td>
 			<td >{{ proj.sizeKiloEuros}}</td>
-			<td >{{ techsForTable(proj) }}</td>
+			<td >{{ proj.techs | shorten }}</td>
 			<td >{{ proj.customer }}</td>
 			<td><button ng-click="remove($index);">Poista</button>
 		</tr>
