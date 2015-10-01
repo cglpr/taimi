@@ -1,9 +1,11 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <portlet:defineObjects />
 
 <div class="container">
-
+	<liferay-ui:tabs names="Lisää työntekijä,Hae työntekijä" refresh="false" tabsValues="Lisää työntekijä,Hae työntekijä">
+	<liferay-ui:section>
 	<div class="page-header">
 		<h1>Työntekijän profiili</h1>
 	</div>
@@ -48,5 +50,9 @@
 			</div>
 		</form>
 	</div>
-
+	</liferay-ui:section>
+	<liferay-ui:section>
+		<p>Tässä tabissa haetaan työntekijöitä</p>
+	</liferay-ui:section>
+	</liferay-ui:tabs>
 </div>

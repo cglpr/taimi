@@ -1,8 +1,11 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
+<%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 
 <portlet:defineObjects />
 <div ng-controller="ProjectController">
 	<form name="form" novalidate class="css-form">
+	<liferay-ui:tabs names="Lis‰‰ projekti,Listaa projektit,Hae projekti" refresh="false" tabsValues="Lis‰‰ projekti,Listaa projektit,Hae projekti">
+	<liferay-ui:section>
 		<h1>Lis‰‰ uusi projekti</h1>
 		<p>
 		Nimi:<br> 
@@ -42,8 +45,10 @@
           <span class="glyphicon glyphicon-plus-sign"></span> Lis‰‰
         </button>
 		</p>
+	</liferay-ui:section>
 	</form>
 
+	<liferay-ui:section>
 	<h1>Projektilista</h1>
 	<table>
 		<tr>
@@ -60,5 +65,10 @@
 			<td><button ng-click="remove($index);">Poista</button>
 		</tr>
 	</table>
+	</liferay-ui:section>
+	<liferay-ui:section>
+		<p>T‰ss‰ tabissa haetaan projekteja</p>
+	</liferay-ui:section>
+	</liferay-ui:tabs>
 </div>
 
