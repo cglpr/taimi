@@ -6,9 +6,10 @@
 			empModule.controller("EmployeeController", ["$scope", function($scope) {
 				$scope.empList = [];
 				$scope.techList = [{name: 'Angularjs', id: '1'}, {name: 'Groovy', id: '2'}, {name: 'Grails', id: '3'}];
-				$scope.currentEmployee = {id: '1', name: 'John Smith'};
+				$scope.currentEmployee = {id: '1', name: 'John Smith', age: '33', streetAddress: 'Orioninkatu 8', postalNumber: '53850', city: 'Lappeenranta'};
 				$scope.currentEmployee.skills = [$scope.techList[0]];
 				$scope.currentEmployee.skills[0].level = '3';
+				$scope.currentEmployee.skills[0].description = 'Asiantuntija';
 				
 				$scope.removeSkill = function(skillId) {}
 				
