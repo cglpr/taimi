@@ -3,7 +3,7 @@
 
 <portlet:defineObjects />
 
-<div class="container">
+<div>
 	<liferay-ui:tabs names="Lisää työntekijä,Hae työntekijä" refresh="false" tabsValues="Lisää työntekijä,Hae työntekijä">
 	<liferay-ui:section>
 	<div class="page-header">
