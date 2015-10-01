@@ -2,5 +2,5 @@
 <!DOCTYPE project>
 
 <project name="LiferayPlayground-portlet" basedir="." default="deploy">
-	<import file="../build-common-portlet.xml" />
+	<import file="${project.dir}/portlets/build-common-portlet.xml" />
 </project>
