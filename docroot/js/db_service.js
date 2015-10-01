@@ -124,21 +124,19 @@
             	var token = response.headers('Auth-Token');
             	debugService.print("dbService.handleTechsSuccess, token: " + token);
             	setAuthData(token);
-            	return ['Angularjs', 'Java'];
-            	/*
-            	var result = {};
-            	result.success = true;
-            	result.techs = parseTechs(rhResponse);
+            	var result = parseTechs(response.data);
                 return( result );
-                */
             }
             
-            function parseTechs(rhResponse) {
-            	var techs = (((rhResponse || {})["_embedded"] || {})["rh:doc"]) || [];
+            function parseTechs(data) {
+            	debugService.print("dbService.parseTechs: " + data);
+            	var techs = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
             	var result = [];
             	techs.forEach(function (tech) {
-            		result.add(tech.name);
+            		result.push(tech.name);
             	});
+            	debugService.print("dbService.parseTechs, returning: " + result);
+            	return result;
             }
         }]
     );

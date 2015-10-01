@@ -10,7 +10,8 @@
         	var debugging = false;
             return({
                 setDebugging: setDebugging,
-                print: print
+                print: print,
+                printProperties: printProperties
             });
             // ---
             // PUBLIC METHODS.
@@ -26,6 +27,14 @@
                 	console.log(text);            		
             	}
              }
+            
+	         function printProperties(obj) {
+	        	 for (var property in obj) {
+        		    if (obj.hasOwnProperty(property)) {
+        		        console.log(property + " -> " + obj[property]);
+        		    }
+	        	 }	            	
+	         }
 
         }
     );

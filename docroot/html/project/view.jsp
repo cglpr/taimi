@@ -24,7 +24,6 @@
 		</p>
 		<p>Teknologiat:<br>
 			<select ng-model="proj.techs" name="projTechs" required multiple>
-				<div ng-repeat="tech in techList">
 				<option ng-repeat="tech in techList" value="{{tech}}">{{tech}}</option>
 			</select>
 			<br /> 
