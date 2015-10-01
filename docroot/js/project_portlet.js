@@ -1,7 +1,8 @@
 (function(Liferay, angular) {
 	angular.portlet.add("LiferayPlayground-portlet", "projectportlet",
 		function() {
-			var projModule = angular.module("projModule", []);
+			var projModule = angular.module("projModule", ['debugModule', 'serviceModule']);
+
 			projModule.filter('shorten', function() {
 				  return function(input, uppercase) {
 				    input = input || '';
@@ -15,9 +16,14 @@
 				    return out;
 				  };
 				});
-			projModule.controller("ProjectController", ["$scope", function($scope) {
+
+			projModule.controller("ProjectController", ["$scope", "debugService", "dbService",
+			                                            function($scope, debugService, dbService) {
 				$scope.projList = [];
 				$scope.techList = ['Angularjs', 'Groovy', 'Grails', 'Java', 'Javascript', 'React', 'Spring', 'Spring-UI'];
+				// TODO: set username and password of the current user (how to get user credentials from liferay?)
+				debugService.setDebugging(true);
+				dbService.setUsernameAndPassword('a', 'a');
 				
 				$scope.add = function(proj) {
 					if(proj){
@@ -29,8 +35,9 @@
 					$scope.projList.splice(index, 1);
 				};
 				
-				$scope.getTechs = function(index) {
-					return techList;
+				$scope.getTechs = function() {
+					//techList = dbService.getTechs();
+					return dbService.getTechs();
 				};
 
 			}]);			
