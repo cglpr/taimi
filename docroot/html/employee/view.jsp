@@ -4,7 +4,7 @@
 <portlet:defineObjects />
 
 <div>
-	<liferay-ui:tabs names="Lisää työntekijä,Hae työntekijä" refresh="false" tabsValues="Lisää työntekijä,Hae työntekijä">
+	<liferay-ui:tabs names="Muokkaa profiilia,Kyselyt" refresh="false" tabsValues="Muokkaa profiilia,Kyselyt">
 	<liferay-ui:section>
 	<div class="page-header">
 		<h1>Työntekijän profiili</h1>
@@ -90,7 +90,7 @@
 	</div>
 	</liferay-ui:section>
 	<liferay-ui:section>
-		<p>Tässä tabissa haetaan työntekijöitä</p>
+		<p>Tässä tabissa vastataan kyselyihin</p>
 	</liferay-ui:section>
 	</liferay-ui:tabs>
 </div>
