@@ -20,6 +20,8 @@
 				</div>
 				<div class="panel-body">
 					
+					<div id="save_status"></div>
+					
 					<div class="row">
 						<div class="col-md-4">Nimi:</div>
 						<div class="col-md-4"><input type="text" ng-model="currentEmployee.name" name="empName" required /></div>
@@ -66,17 +68,32 @@
 						<thead>
 							<tr>
 								<th>Osaamisalue</th>
-								<th>Taso (1 - 5)</th>
-								<th>Kuvaus osaamistasosta</th>
+								<th>Osaamistaso</th>
 								<th></th>
 							</tr>
 						</thead>
 						<tbody>
 							<tr ng-repeat="skill in currentEmployee.skills">
 								<td>{{skill.name}}</td>
-								<td>{{skill.level}}</td>
-								<td>{{skill.description}}</td>
+								<td>{{skill.level.name}}</td>
 								<td><button class="btn btn-default" ng-click="removeSkill(skill)">Poista</button></td>
+							</tr>
+							<!-- Add new skill -->
+							<tr>
+								<td>
+									<select class="form-control" ng-model="newSkill.name" name="selectTech">
+										<option value="-1"></option><!-- empty value -->
+										<option ng-repeat="tech in techList" value="{{tech.name}}">{{tech.name}}</option>
+									</select>
+								</td>
+								<td>
+									<select class="form-control" ng-model="newSkill.level" name="selectLevel">
+										<option ng-repeat="skillLevel in skillLevels" value="{{skillLevel}}">{{skillLevel.name}}</option>
+									</select>
+								</td>
+								<td>
+									<button class="btn btn-default" ng-click="addSkill(newSkill)">Lis‰‰</button>
+								</td>
 							</tr>
 						</tbody>
 					</table>
@@ -84,7 +101,7 @@
 			</div>
 			
 			<div class="row">
-				<div class="col-md-6"><button class="btn btn-default" type="button">Tallenna muutokset</button>
+				<div class="col-md-6"><button class="btn btn-default" type="button" ng-click="save()">Tallenna muutokset</button>
 				</div>
 			</div>
 		</form>
