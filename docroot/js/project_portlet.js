@@ -32,22 +32,20 @@
 				
 				$scope.add = function(proj) {
 					if(proj){
-						// TODO: selvita miksei tassa toimi then() - eiko tule Promisea jostain syysta?!?!
-						dbService.addProject(proj); //.then(addProjectSuccess, addProjectError);
-						setTimeout(function() {addProjectSuccess("called manually");}, 500);
+						dbService.addProject(proj).then(addProjectSuccess, addProjectError);
 					}
 				};
 
 				$scope.remove = function(index) {
-					$scope.projList.splice(index, 1);
+					var p = $scope.projList[index];
+					debugService.print("in remove, project to remove: " + p);
+					dbService.removeProject(p).then(addProjectSuccess, addProjectError);
 				};
 				
 				$scope.addTech = function(aTech) {
 					debugService.print("in addTech: " + aTech);
 					if(aTech) {
-						// TODO: selvita miksei tassa toimi then() - eiko tule Promisea jostain syysta?!?!
-						dbService.addTech(aTech); //.then(addTechSuccess, addTechError);
-						setTimeout(function() {addTechSuccess("called manually");}, 500);
+						dbService.addTech(aTech).then(addTechSuccess, addTechError);
 						$scope.newTech = null;
 					}
 
@@ -74,6 +72,12 @@
 				
 				function getProjectsSuccess(result) {
 					debugService.print("in getProjectsSuccess cb, result: " + result);
+					if(result) {
+						result.forEach(function(elem) {
+							debugService.print("Project's properties:");
+							debugService.printProperties(elem);							
+						});
+					}
 					$scope.projList = result;					
 				}
 				
@@ -87,7 +91,7 @@
 					initTechs();				
 				}
 				
-				function addTechsError(result) { // TODO: where to put the error msg?
+				function addTechError(result) { // TODO: where to put the error msg?
 					debugService.print("in addTechsError, result: " + result);
 				}				
 				function addProjectSuccess(result) {

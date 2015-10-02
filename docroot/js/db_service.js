@@ -18,7 +18,8 @@
                 addTech: addTech,
                 addProject: addProject,
                 getProjects: getProjects,
-                getTechs: getTechs
+                getTechs: getTechs,
+                removeProject: removeProject
             });
             // ---
             // PUBLIC METHODS.
@@ -28,35 +29,33 @@
             	pwd = password;
             	setAuthData();
             }
+
+            //
+            // All these methods that are used to query/update the db, return Promise objects,
+            // so these are called for example like this:
+            // var promise = dbService.addTech( techName );
+            // promise.then(mySuccessHandlerCallback, myErrorHandlerCallback);
+            //
             
             function addTech( name ) {
             	debugService.print("dbService.addTech called with name: " + name );
-            	addToCollection('techs', {name : name});
-            	/*
-                var request = $http({
-                    method: "post",
-                    url: "http://localhost:8090/lrskillz/techs",
-                    params: {
-                        name: name
-                    },
-                    data: {
-                        name: name
-                    }
-                });
-                return( request.then( handleSuccess, handleError ) );
-                */
+            	return addToCollection('techs', {name : name});
             }
 
             function addProject( project ) {
-            	addToCollection('projects', project);
+            	return addToCollection('projects', project);
             }
             
-            // Returns Promise
+            function removeProject( project ) {
+            	debugService.print("dbService.removeProject _etag props:");
+            	debugService.printProperties(project._etag);
+            	return removeFromCollection('projects', project._id.$oid, project._etag.$oid);
+            }
+            
             function getProjects() {
             	return getCollection('projects');
             }
             
-            // Returns Promise
             function getTechs() {
             	debugService.print("dbService.getTechs called again");
             	var reqObject = {
@@ -74,8 +73,7 @@
             // ---
             // PRIVATE METHODS.
             // ---
-            // collection = collection to which to add the document
-            // doc = doc object, this function JSONifies it
+
             function getCollection( collection ) {
             	debugService.print("dbService.getCollection called again with param: " + collection);
             	var reqObject = {
@@ -98,17 +96,30 @@
                     url: "http://localhost:8090/lrskillz/" + collection,
                     data: doc
                 };
-            	debugService.print("dbService.addToCollection before addAuthData");
             	addAuthData(reqObject);
-            	debugService.print("dbService.addToCollection before $http");
             	var request = $http(reqObject);
-            	debugService.print("dbService.addToCollection after $http");
                 return( request.then( handleAddSuccess, handleError ) );
+            }
+            
+            // Used for collections the documents of which contain 'name' as a property:
+            function removeFromCollection( collection, id, etag ) {
+
+            	debugService.print("dbService.removeFromCollection called with params: "
+            			+ collection + ", " + id + " and etag: " + etag);
+                var reqObject = {
+                    method: "delete",
+                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id
+                };
+            	addAuthData(reqObject);
+            	reqObject.headers['If-Match'] = etag;
+            	var request = $http(reqObject);
+                return( request.then( handleAddSuccess, handleError ) );
+
             }
             
             function setAuthData(token) {
             	var myPwd = token || pwd;
-            	authData = Base64.encode(user + ":" + pwd);
+            	authData = Base64.encode(user + ":" + myPwd);
             }
             
             function getAuthData() {
@@ -137,10 +148,6 @@
             
             function handleError( response ) {
             	debugService.print("dbService.handleError: " + response);
-                // The API response from the server should be returned in a
-                // normalized format. However, if the request was not handled by the
-                // server (or what not handles properly - ex. server error), then we
-                // may have to normalize it on our end, as best we can.
                 if (
                     ! angular.isObject( response.data ) ||
                     ! response.data.message
