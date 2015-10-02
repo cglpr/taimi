@@ -31,6 +31,13 @@
       				<div ng-show="form.projTechs.$error.required" style="color: red" >Teknologiat ovat pakolliset.</div>
     		  </div>
 		</p>
+		<p>Lis&auml;&auml; teknologia:<br> 
+			<input type="text" ng-model="newTech" name="newTechnology" /> 
+			<button type="button" class="btn btn-default btn-sm" ng-click="addTech(newTech)">
+            	<span class="glyphicon glyphicon-plus-sign"></span> Lis‰‰
+        	</button>
+			<br /> 
+		</p>
 		<p>Kuvaus:<br> 
 			<input type="text" ng-model="proj.description" name="projDescription" /> 
 			<br /> 
