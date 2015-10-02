@@ -11,7 +11,10 @@
 				$scope.currentEmployee.skills[0].level = '3';
 				$scope.currentEmployee.skills[0].description = 'Asiantuntija';
 				
-				$scope.removeSkill = function(skillId) {}
+				$scope.removeSkill = function(skill) {
+					var index = $scope.currentEmployee.skills.indexOf(skill);
+					$scope.currentEmployee.skills.splice(index, 1); 
+				}
 				
 			}]);
 			

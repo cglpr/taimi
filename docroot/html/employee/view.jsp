@@ -1,10 +1,11 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
+<%@ taglib prefix="liferay-util" uri="http://liferay.com/tld/util" %>
 
 <portlet:defineObjects />
 
 <div>
-	<liferay-ui:tabs names="Muokkaa profiilia,Kyselyt" refresh="false" tabsValues="Muokkaa profiilia,Kyselyt">
+	<liferay-ui:tabs names="Muokkaa profiilia" refresh="false" tabsValues="Muokkaa profiilia">
 	<liferay-ui:section>
 	<div class="page-header">
 		<h1>Työntekijän profiili</h1>
@@ -75,7 +76,7 @@
 								<td>{{skill.name}}</td>
 								<td>{{skill.level}}</td>
 								<td>{{skill.description}}</td>
-								<td><button class="btn btn-default">Poista</button></td>
+								<td><button class="btn btn-default" ng-click="removeSkill(skill)">Poista</button></td>
 							</tr>
 						</tbody>
 					</table>
@@ -88,9 +89,6 @@
 			</div>
 		</form>
 	</div>
-	</liferay-ui:section>
-	<liferay-ui:section>
-		<p>Tässä tabissa vastataan kyselyihin</p>
 	</liferay-ui:section>
 	</liferay-ui:tabs>
 </div>
