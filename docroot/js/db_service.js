@@ -16,6 +16,8 @@
             return({
             	setUsernameAndPassword: setUsernameAndPassword,
                 addTech: addTech,
+                addProject: addProject,
+                getProjects: getProjects,
                 getTechs: getTechs
             });
             // ---
@@ -28,6 +30,8 @@
             }
             
             function addTech( name ) {
+            	debugService.print("dbService.addTech called with name: " + name );
+            	addToCollection('techs', {name : name});
             	/*
                 var request = $http({
                     method: "post",
@@ -42,7 +46,17 @@
                 return( request.then( handleSuccess, handleError ) );
                 */
             }
+
+            function addProject( project ) {
+            	addToCollection('projects', project);
+            }
             
+            // Returns Promise
+            function getProjects() {
+            	return getCollection('projects');
+            }
+            
+            // Returns Promise
             function getTechs() {
             	debugService.print("dbService.getTechs called again");
             	var reqObject = {
@@ -54,24 +68,44 @@
             	};
             	addAuthData(reqObject);
             	var request = $http(reqObject);
-            	/*
-                var request = $http({
-                    method: "get",
-                    url: "http://localhost:8090/lrskillz/techs",
-                    params: {
-                        action: "get"
-                    },
-                	headers: {
-                		'Authorization' : createBasicAuthHeader()
-                	}
-                });
-                */
                 return( request.then( handleTechsSuccess, handleError ) );
             }
 
             // ---
             // PRIVATE METHODS.
             // ---
+            // collection = collection to which to add the document
+            // doc = doc object, this function JSONifies it
+            function getCollection( collection ) {
+            	debugService.print("dbService.getCollection called again with param: " + collection);
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/" + collection,
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleGetCollectionSuccess, handleError ) );
+            }
+            
+            function addToCollection( collection, doc ) {
+            	debugService.print("dbService.addToCollection called with param: " + collection + " and: " + doc);
+            	var json_doc = JSON.stringify(doc);
+                var reqObject = {
+                    method: "post",
+                    url: "http://localhost:8090/lrskillz/" + collection,
+                    data: doc
+                };
+            	debugService.print("dbService.addToCollection before addAuthData");
+            	addAuthData(reqObject);
+            	debugService.print("dbService.addToCollection before $http");
+            	var request = $http(reqObject);
+            	debugService.print("dbService.addToCollection after $http");
+                return( request.then( handleAddSuccess, handleError ) );
+            }
+            
             function setAuthData(token) {
             	var myPwd = token || pwd;
             	authData = Base64.encode(user + ":" + pwd);
@@ -116,8 +150,17 @@
                 // Otherwise, use expected error message.
                 return( $q.reject( response.data.message ) );
             }
-            // I transform the successful response, unwrapping the application data
-            // from the API response payload.
+
+            function handleGetCollectionSuccess( response ) {
+            	debugService.print("dbService.handleGetCollectionSuccess");
+
+            	var token = response.headers('Auth-Token');
+            	debugService.print("dbService.handleGetCollectionSuccess, token: " + token);
+            	setAuthData(token);
+            	var result = parseObjects(response.data);
+                return( result );
+            }
+            
             function handleTechsSuccess( response ) {
             	debugService.print("dbService.handleTechsSuccess");
 
@@ -128,6 +171,18 @@
                 return( result );
             }
             
+            function handleAddSuccess( response ) {
+            	debugService.print("dbService.handleAddSuccess");
+
+            	var token = response.headers('Auth-Token');
+            	debugService.print("dbService.handleAddSuccess, token: " + token);
+            	setAuthData(token);
+            	debugService.print("dbService.handleAddSuccess, response: " + response + " and properties:");
+            	debugService.printProperties(response);
+                return( response );
+            }
+            
+            // Techs are objects with only name property. This returns a list of names.
             function parseTechs(data) {
             	debugService.print("dbService.parseTechs: " + data);
             	var techs = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
@@ -138,5 +193,14 @@
             	debugService.print("dbService.parseTechs, returning: " + result);
             	return result;
             }
+            
+            // This returns a list of whatever-object is queried from a collection.
+            function parseObjects(data) {
+            	debugService.print("dbService.parseObjects: " + data);
+            	var result = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
+            	debugService.print("dbService.parseObjects, returning: " + result);
+            	return result;
+            }
+
         }]
     );
