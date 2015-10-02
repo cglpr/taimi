@@ -1,7 +1,8 @@
 (function(Liferay, angular) {
 	angular.portlet.add("LiferayPlayground-portlet", "projectportlet",
 		function() {
-			var projModule = angular.module("projModule", []);
+			var projModule = angular.module("projModule", ['debugModule', 'serviceModule']);
+
 			projModule.filter('shorten', function() {
 				  return function(input, uppercase) {
 				    input = input || '';
@@ -15,10 +16,17 @@
 				    return out;
 				  };
 				});
-			projModule.controller("ProjectController", ["$scope", function($scope) {
-				$scope.projList = [];
-				$scope.techList = ['Angularjs', 'Groovy', 'Grails', 'Java', 'Javascript', 'React', 'Spring', 'Spring-UI'];
+
+			projModule.controller("ProjectController", ["$scope", "debugService", "dbService",
+			                                            function($scope, debugService, dbService) {
+				debugService.setDebugging(true);
+				dbService.setUsernameAndPassword('a', 'a');
 				
+				$scope.projList = [];
+				$scope.techList = [];
+
+				dbService.getTechs().then(getTechsSuccess, getTechsError);
+				// TODO: set username and password of the current user (how to get user credentials from liferay?)
 				$scope.add = function(proj) {
 					if(proj){
 						$scope.projList.push(proj);
@@ -29,10 +37,14 @@
 					$scope.projList.splice(index, 1);
 				};
 				
-				$scope.getTechs = function(index) {
-					return techList;
-				};
-
+				function getTechsSuccess(result) {
+					debugService.print("in getTech cb, result: " + result);
+					$scope.techList = result;					
+				}
+				
+				function getTechsError(result) { // TODO: where to put the error msg?
+					$scope.techList = [result || ""];						
+				}				
 			}]);			
 			return [ projModule.name ];
 		});
