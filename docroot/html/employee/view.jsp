@@ -78,6 +78,26 @@
 								<td>{{skill.description}}</td>
 								<td><button class="btn btn-default" ng-click="removeSkill(skill)">Poista</button></td>
 							</tr>
+							<!-- Add new skill -->
+							<tr>
+								<td>
+									<select class="form-control" ng-model="newSkill.id">
+										<option value=""></option><!-- empty value -->
+										<option ng-repeat="tech in techList" value="{{tech.id}}">{{tech.name}}</option>
+									</select>
+								</td>
+								<td>
+									<select class="form-control" ng-model="newSkill.level">
+										<option ng-repeat="i in [1, 2, 3, 4, 5]" value="{{i}}">{{i}}</option>
+									</select>
+								</td>
+								<td>
+									<input type="text" ng-model="newSkill.description" class="form-control" />
+								</td>
+								<td>
+									<button class="btn btn-default" ng-click="addSkill(newSkill)">Lis‰‰</button>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
