@@ -5,12 +5,11 @@
 			
 			empModule.controller("EmployeeController", ["$scope", "$log", "$filter", function($scope, $log, $filter) {
 				$scope.empList = [];
-				$scope.techList = [{name: 'Angularjs', id: '1'}, {name: 'Groovy', id: '2'}, {name: 'Grails', id: '3'}];
-				$scope.skillLevels = ['1', '2', '3', '4', '5'];
+				$scope.techList = [{name: 'Angularjs'}, {name: 'Groovy'}, {name: 'Grails'}];
+				$scope.skillLevels = [{id: '1', name: 'Aloittelija'}, {id: '2', name: 'Kokenut'}, {id: '3', name: 'Asiantuntija'}];
 				$scope.currentEmployee = {id: '1', name: 'John Smith', age: '33', streetAddress: 'Orioninkatu 8', postalNumber: '53850', city: 'Lappeenranta'};
 				$scope.currentEmployee.skills = [$scope.techList[0]];
-				$scope.currentEmployee.skills[0].level = '3';
-				$scope.currentEmployee.skills[0].description = 'Asiantuntija';
+				$scope.currentEmployee.skills[0].level = $scope.skillLevels[0];
 				
 				$scope.removeSkill = function(skill) {
 					var index = $scope.currentEmployee.skills.indexOf(skill);
@@ -18,16 +17,15 @@
 				}
 				
 				$scope.addSkill = function(newSkill) {
+					if (newSkill.id === '-1') {
+						return;
+					}
+					$log.debug("newSkill: ", newSkill);
 					// We need to copy object, so we get a new object.
 					var newSkillObject = jQuery.extend(true, {}, newSkill);
-					// Set tech name based on id.
-					newSkillObject.name = $filter('filter')($scope.techList, {id: newSkill.id})[0].name;
-					
-					$log.debug("newSkillObject: ", newSkillObject);
-					
-					$scope.currentEmployee.skills.push(newSkillObject);
-					// TODO: remove. For testing purposes
-					$log.debug("FilterById result: ", $filter('filter')($scope.techList, {id: newSkill.id}))[0];						
+					newSkillObject.level = JSON.parse(newSkillObject.level);
+
+					$scope.currentEmployee.skills.push(newSkillObject);					
 				}
 				
 			}]);
