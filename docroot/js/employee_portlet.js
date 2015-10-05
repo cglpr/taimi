@@ -1,9 +1,9 @@
 (function(Liferay, angular) {
 	angular.portlet.add("LiferayPlayground-portlet", "employeeportlet",
 		function() {
-			var empModule = angular.module("empModule", []);
+			var empModule = angular.module("empModule", ['flash', 'ngAnimate']);
 			
-			empModule.controller("EmployeeController", ["$scope", "$log", "$filter", function($scope, $log, $filter) {
+			empModule.controller("EmployeeController", ["$scope", "$log", "$filter", "flash", function($scope, $log, $filter, flash) {
 				$scope.empList = [];
 				$scope.techList = [{name: 'Angularjs'}, {name: 'Groovy'}, {name: 'Grails'}];
 				$scope.skillLevels = [{id: '1', name: 'Aloittelija'}, {id: '2', name: 'Kokenut'}, {id: '3', name: 'Asiantuntija'}];
@@ -26,6 +26,10 @@
 					newSkillObject.level = JSON.parse(newSkillObject.level);
 
 					$scope.currentEmployee.skills.push(newSkillObject);					
+				}
+				
+				$scope.save = function() {
+					flash('Profiili tallennettu.');
 				}
 				
 			}]);

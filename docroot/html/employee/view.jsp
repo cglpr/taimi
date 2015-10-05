@@ -20,8 +20,6 @@
 				</div>
 				<div class="panel-body">
 					
-					<div id="save_status"></div>
-					
 					<div class="row">
 						<div class="col-md-4">Nimi:</div>
 						<div class="col-md-4"><input type="text" ng-model="currentEmployee.name" name="empName" required /></div>
@@ -104,6 +102,9 @@
 				<div class="col-md-6"><button class="btn btn-default" type="button" ng-click="save()">Tallenna muutokset</button>
 				</div>
 			</div>
+			
+			<flash:messages class="slide-down" ng:show="messages"></flash:messages>
+			
 		</form>
 	</div>
 	</liferay-ui:section>
