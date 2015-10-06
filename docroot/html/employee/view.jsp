@@ -81,7 +81,7 @@
 								<td>
 									<select class="form-control" ng-model="newSkill.name" name="selectTech">
 										<option value="-1"></option><!-- empty value -->
-										<option ng-repeat="tech in techList" value="{{tech.name}}">{{tech.name}}</option>
+										<option ng-repeat="tech in techList" value="{{tech}}">{{tech}}</option>
 									</select>
 								</td>
 								<td>

@@ -19,6 +19,7 @@
                 addProject: addProject,
                 getProjects: getProjects,
                 getTechs: getTechs,
+                getUserProfile: getUserProfile,
                 removeProject: removeProject
             });
             // ---
@@ -46,6 +47,10 @@
             	return addToCollection('projects', project);
             }
             
+            function getProfile(id) {
+            	return getCollection
+            }
+            
             function removeProject( project ) {
             	debugService.print("dbService.removeProject _etag props:");
             	debugService.printProperties(project._etag);
@@ -69,11 +74,30 @@
             	var request = $http(reqObject);
                 return( request.then( handleTechsSuccess, handleError ) );
             }
+            
+            function getUserProfile(userId) {
+            	debugService.print("dbService.getUserProfile called with userId: " + userId);
+            	return getWithCollectionAndId('persons', userId);
+            }
 
             // ---
             // PRIVATE METHODS.
             // ---
 
+            function getWithCollectionAndId(collection, id) {
+            	debugService.print("dbService.getWithCollectionAndId called  with collection: " + collection + " and id: " + id);
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id,
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleGetWithCollectionAndIdSuccess, handleError ) );
+            }
+            
             function getCollection( collection ) {
             	debugService.print("dbService.getCollection called again with param: " + collection);
             	var reqObject = {
@@ -158,6 +182,13 @@
                 return( $q.reject( response.data.message ) );
             }
 
+            function handleGetWithCollectionAndIdSuccess( response ) {
+            	debugService.print("dbService.handleGetWithCollectionAndIdSuccess");
+            	var token = response.headers('Auth-Token');
+            	setAuthData(token);
+                return(response.data);
+            }
+            
             function handleGetCollectionSuccess( response ) {
             	debugService.print("dbService.handleGetCollectionSuccess");
 
