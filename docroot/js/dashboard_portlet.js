@@ -18,8 +18,8 @@ function drawChart() {  // When HTML DOM "click" event is invoked on element wit
 
         var options = {
           title: 'Global Skill Demand',
-          width: 450, 
-          height: 500,
+          width: 320, 
+          height: 450,
           is3D: true
         };
         
