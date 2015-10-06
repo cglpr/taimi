@@ -4,6 +4,7 @@
 <display>
 	<category name="category.sample">
 		<portlet id="LiferayPlayground" />
+		<portlet id="dashboardportlet"></portlet>
 		<portlet id="employeeportlet"></portlet>
 		<portlet id="projectportlet"></portlet>
 	</category>
