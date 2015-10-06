@@ -73,7 +73,7 @@
 						<tbody>
 							<tr ng-repeat="skill in currentEmployee.skills">
 								<td>{{skill.name}}</td>
-								<td>{{skill.level.name}}</td>
+								<td>{{skill.level}}</td>
 								<td><button class="btn btn-default" ng-click="removeSkill(skill)">Poista</button></td>
 							</tr>
 							<!-- Add new skill -->
@@ -86,7 +86,7 @@
 								</td>
 								<td>
 									<select class="form-control" ng-model="newSkill.level" name="selectLevel">
-										<option ng-repeat="skillLevel in skillLevels" value="{{skillLevel}}">{{skillLevel.name}}</option>
+										<option ng-repeat="skillLevel in skillLevels" value="{{skillLevel}}">{{skillLevel}}</option>
 									</select>
 								</td>
 								<td>

@@ -20,6 +20,7 @@
                 getProjects: getProjects,
                 getTechs: getTechs,
                 getUserProfile: getUserProfile,
+                getSkillLevels: getSkillLevels,
                 removeProject: removeProject
             });
             // ---
@@ -73,6 +74,20 @@
             	addAuthData(reqObject);
             	var request = $http(reqObject);
                 return( request.then( handleTechsSuccess, handleError ) );
+            }
+            
+            function getSkillLevels() {
+            	debugService.print("dbService.getSkillLevels called.");
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/skillLevels",
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleSkillLevelsSuccess, handleError ) );
             }
             
             function getUserProfile(userId) {
@@ -209,6 +224,23 @@
                 return( result );
             }
             
+            function handleSkillLevelsSuccess( response ) {
+            	debugService.print("dbService.handleSkillLevelSuccess");
+            	var token = response.headers('Auth-Token');
+            	setAuthData(token);
+            	var result = parseSkillLevels(response.data);
+                return( result );
+            }
+            
+            function handleSuccess( response ) {
+            	debugService.print("dbService.handleSuccess");
+            	var token = response.headers('Auth-Token');
+            	debugService.print("dbService.handleSuccess, token: " + token);
+            	setAuthData(token);
+            	var result = parseObjects(response.data);
+                return( result );
+            }
+            
             function handleAddSuccess( response ) {
             	debugService.print("dbService.handleAddSuccess");
 
@@ -229,6 +261,17 @@
             		result.push(tech.name);
             	});
             	debugService.print("dbService.parseTechs, returning: " + result);
+            	return result;
+            }
+            
+            function parseSkillLevels(data) {
+            	debugService.print("dbService.parseSkillLevels: " + data);
+            	var skillLevels = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
+            	var result = [];
+            	skillLevels.forEach(function (skillLevel) {
+            		result.push(skillLevel.name);
+            	});
+            	debugService.print("dbService.parseSkillLevels, returning: " + result);
             	return result;
             }
             

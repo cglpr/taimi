@@ -16,6 +16,7 @@
 				
 				getProfile($scope.userId);				
 				initTechs();
+				initSkillLevels();
 				
 				//$scope.skillLevels = [{id: '1', name: 'Aloittelija'}, {id: '2', name: 'Kokenut'}, {id: '3', name: 'Asiantuntija'}];
 				//$scope.currentEmployee.skills = [$scope.techList[0]];
@@ -28,12 +29,12 @@
 				}
 				
 				$scope.addSkill = function(newSkill) {
-					if (newSkill.id === '-1') {
+					if (newSkill.level === '' || newSkill.name === '') {
 						return;
 					}
 					// We need to copy object, so we get a new object.
 					var newSkillObject = jQuery.extend(true, {}, newSkill);
-					newSkillObject.level = JSON.parse(newSkillObject.level);
+					//newSkillObject.level = JSON.parse(newSkillObject.level);
 
 					$scope.currentEmployee.skills.push(newSkillObject);					
 				}
@@ -61,6 +62,10 @@
 					dbService.getTechs().then(getTechsSuccess, getTechsError);					
 				}
 				
+				function initSkillLevels() {
+					dbService.getSkillLevels().then(getSkillLevelsSuccess, getSkillLevelsError);
+				}
+				
 				function getTechsSuccess(result) {
 					debugService.print("in getTech cb, result: " + result);
 					$scope.techList = result.sort(function(a,b) {
@@ -70,6 +75,18 @@
 				
 				function getTechsError(result) { // TODO: where to put the error msg?
 					$scope.techList = [result || ""];						
+				}
+				
+				function getSkillLevelsSuccess(result) {
+					debugService.print("in getSkillLevelsSuccess");
+					$scope.skillLevels = result.sort(function(a,b) {
+					    return a.toLowerCase().localeCompare(b.toLowerCase());
+					});
+					
+				}
+				
+				function getSkillLevelsError(result) { // TODO: where to put the error msg?
+					$scope.skillLevels = [result || ""];						
 				}
 				
 				function addTechSuccess(result) {
