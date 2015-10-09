@@ -19,6 +19,8 @@
                 addProject: addProject,
                 getProjects: getProjects,
                 getTechs: getTechs,
+                getUserProfile: getUserProfile,
+                getSkillLevels: getSkillLevels,
                 removeProject: removeProject
             });
             // ---
@@ -46,6 +48,10 @@
             	return addToCollection('projects', project);
             }
             
+            function getProfile(id) {
+            	return getCollection
+            }
+            
             function removeProject( project ) {
             	debugService.print("dbService.removeProject _etag props:");
             	debugService.printProperties(project._etag);
@@ -69,11 +75,44 @@
             	var request = $http(reqObject);
                 return( request.then( handleTechsSuccess, handleError ) );
             }
+            
+            function getSkillLevels() {
+            	debugService.print("dbService.getSkillLevels called.");
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/skillLevels",
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleSkillLevelsSuccess, handleError ) );
+            }
+            
+            function getUserProfile(userId) {
+            	debugService.print("dbService.getUserProfile called with userId: " + userId);
+            	return getWithCollectionAndId('persons', userId);
+            }
 
             // ---
             // PRIVATE METHODS.
             // ---
 
+            function getWithCollectionAndId(collection, id) {
+            	debugService.print("dbService.getWithCollectionAndId called  with collection: " + collection + " and id: " + id);
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id,
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleGetWithCollectionAndIdSuccess, handleError ) );
+            }
+            
             function getCollection( collection ) {
             	debugService.print("dbService.getCollection called again with param: " + collection);
             	var reqObject = {
@@ -158,6 +197,13 @@
                 return( $q.reject( response.data.message ) );
             }
 
+            function handleGetWithCollectionAndIdSuccess( response ) {
+            	debugService.print("dbService.handleGetWithCollectionAndIdSuccess");
+            	var token = response.headers('Auth-Token');
+            	setAuthData(token);
+                return(response.data);
+            }
+            
             function handleGetCollectionSuccess( response ) {
             	debugService.print("dbService.handleGetCollectionSuccess");
 
@@ -175,6 +221,23 @@
             	debugService.print("dbService.handleTechsSuccess, token: " + token);
             	setAuthData(token);
             	var result = parseTechs(response.data);
+                return( result );
+            }
+            
+            function handleSkillLevelsSuccess( response ) {
+            	debugService.print("dbService.handleSkillLevelSuccess");
+            	var token = response.headers('Auth-Token');
+            	setAuthData(token);
+            	var result = parseSkillLevels(response.data);
+                return( result );
+            }
+            
+            function handleSuccess( response ) {
+            	debugService.print("dbService.handleSuccess");
+            	var token = response.headers('Auth-Token');
+            	debugService.print("dbService.handleSuccess, token: " + token);
+            	setAuthData(token);
+            	var result = parseObjects(response.data);
                 return( result );
             }
             
@@ -199,6 +262,17 @@
             		result.push(tech.name);
             	});
             	debugService.print("dbService.parseTechs, returning: " + result);
+            	return result;
+            }
+            
+            function parseSkillLevels(data) {
+            	debugService.print("dbService.parseSkillLevels: " + data);
+            	var skillLevels = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
+            	var result = [];
+            	skillLevels.forEach(function (skillLevel) {
+            		result.push(skillLevel.name);
+            	});
+            	debugService.print("dbService.parseSkillLevels, returning: " + result);
             	return result;
             }
             
