@@ -186,7 +186,8 @@
             	setAuthData(token);
             	debugService.print("dbService.handleAddSuccess, response: " + response + " and properties:");
             	debugService.printProperties(response);
-                return( response );
+            	// return just empty object in succesful case:
+                return( {} );
             }
             
             // Techs are objects with only name property. This returns a list of names.

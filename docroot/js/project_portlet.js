@@ -87,7 +87,7 @@
 				}
 				
 				function addTechSuccess(result) {
-					debugService.print("in addTechSuccess cb");
+					debugService.print("in addTechSuccess cb, result: '" + result + "'");
 					initTechs();				
 				}
 				
