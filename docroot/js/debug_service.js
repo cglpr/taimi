@@ -28,7 +28,10 @@
             	}
              }
             
-	         function printProperties(obj) {
+	         function printProperties(obj, msg) {
+	        	 if(msg) {
+	        		 print(msg);
+	        	 }
 	        	 for (var property in obj) {
         		    if (obj.hasOwnProperty(property)) {
         		        console.log(property + " -> " + obj[property]);

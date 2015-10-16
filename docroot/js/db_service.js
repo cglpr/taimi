@@ -12,7 +12,22 @@
         	var authToken = null;
         	var user = null;
         	var pwd = null;
-        	
+			var operators = ['>', '<', htmlDecode('sis&auml;lt&auml;&auml;'), 'alkaa', htmlDecode('p&auml;&auml;ttyy'), '=', '<=', '>='];
+			var joinOperators = ['AND', 'OR'];
+			var reverseFields = {	
+					'Projektin nimi' : 'name',
+					'Koko/kEUR' : 'sizeKiloEuros',
+					'Teknologiat' : 'techs',
+					'Asiakas' : 'customer'
+			};
+			var operatorMapping = {
+				'>' : '$gt',
+				'<' : '$lt',
+				'=' : '$eq',
+				'<=' : '$lte',
+				'>=' : '$gte'
+			};
+			
             return({
             	setUsernameAndPassword: setUsernameAndPassword,
                 addTech: addTech,
@@ -21,7 +36,10 @@
                 getTechs: getTechs,
                 getUserProfile: getUserProfile,
                 getSkillLevels: getSkillLevels,
-                removeProject: removeProject
+                removeProject: removeProject,
+                searchProjects: searchProjects,
+                getOperators: getOperators,
+                getJoinOperators: getJoinOperators
             });
             // ---
             // PUBLIC METHODS.
@@ -95,10 +113,93 @@
             	return getWithCollectionAndId('persons', userId);
             }
 
+            function getOperators() {
+            	return operators.slice();
+            }
+
+            function getJoinOperators() {
+            	return joinOperators.slice();
+            }
+/*
+ * 			var reverseFields = {	
+					'Projektin nimi' : 'name',
+					'Koko/kEUR' : 'sizeKiloEuros',
+					'Teknologiat' : 'techs',
+					'Asiakas' : 'customer'
+			};
+			
+            // Esimerkkikysely 
+            // http://localhost:8090/lrskillz/projects?filter={'name':{'$regex':'(?i)^roj.*'}}
+            // tai:
+            // "127.0.0.1:8080/test/coll?filter={'$and':[{'title': {'$regex':'(?i)^STAR TREK.*'}, {'publishing_date':{'$gte':{'$date':'2015-09-04T08:00:00Z'}}}]}"
+
+ */            
+            function searchProjects(termsList) {
+            	var query;
+				debugService.print("dbService.searchProjects begin");
+            	if(termsList.length > 1) {
+    				debugService.print("dbService.searchProjects createCombinedQuery");
+            		query = createCombinedQuery(termsList);
+            	} else if(termsList.length == 1){
+    				debugService.print("dbService.searchProjects createSimpleQuery");
+            		query = createSimpleQuery(termsList[0]);
+            	} else {
+            		// find all
+    				debugService.print("dbService.searchProjects getCollection");
+                	return getCollection('projects');
+            	}
+				debugService.print("dbService.searchProjects before searchCollection, query: " + query);
+            	return searchCollection('projects', query);
+            }
+            
             // ---
             // PRIVATE METHODS.
             // ---
 
+           function createCombinedQuery(termsList) {
+				debugService.print("dbService.createCombinedQuery begin");
+            	var op = '$' + (termsList[0].joinOperator || "and").toLowerCase();
+            	var queryTerms = [];
+            	var aTerm;
+            	var result = {};
+				debugService.print("dbService.createCombinedQuery operation: " + op);
+            	termsList.forEach(function(elem) {
+            		aTerm = {};
+            		aTerm[reverseFields[elem['field']]] = createFilterTerm(elem);
+            		queryTerms.push(aTerm);
+            	});
+            	result[op] = queryTerms;
+            	return 'filter=' + JSON.stringify(result);
+            }
+            
+            function createFilterTerm(terms) {
+				debugService.print("dbService.createFilterTerm begin");
+            	var filterTerm = {};
+            	var myVal = terms.value;
+            	var myOp = operatorMapping[terms.oper];
+            	if(!myOp) {
+            		// regex matching
+            		myOp = '$regex';
+            		if(terms.oper.startsWith('a')) {
+            			myVal = '^' + myVal;
+            		} else if(terms.oper.startsWith('p')) {
+            			myVal = myVal + "$";
+            		} else {
+            			myVal = '.*' + myVal + '.*';
+            		}
+            	}
+            	filterTerm[myOp] = myVal;
+				debugService.printProperties(filterTerm, "dbService.createFilterTerm returning:");
+            	return filterTerm;
+            }
+            
+            function createSimpleQuery(terms) {
+            	var result = {};
+            	result[reverseFields[terms['field']]] = createFilterTerm(terms);
+				debugService.print("dbService.createSimpleQuery, result: " + result);
+            	return 'filter=' + JSON.stringify(result);
+            }
+            
             function getWithCollectionAndId(collection, id) {
             	debugService.print("dbService.getWithCollectionAndId called  with collection: " + collection + " and id: " + id);
             	var reqObject = {
@@ -118,6 +219,20 @@
             	var reqObject = {
                     method: "get",
                     url: "http://localhost:8090/lrskillz/" + collection,
+                    params: {
+                        action: "get"
+                    }            			
+            	};
+            	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleGetCollectionSuccess, handleError ) );
+            }
+            
+            function searchCollection( collection, filter ) {
+            	debugService.print("dbService.searchCollection called with param: " + collection + " and " + filter);
+            	var reqObject = {
+                    method: "get",
+                    url: "http://localhost:8090/lrskillz/" + collection + "?" + filter,
                     params: {
                         action: "get"
                     }            			
@@ -281,8 +396,31 @@
             	debugService.print("dbService.parseObjects: " + data);
             	var result = (((data || {})["_embedded"] || {})["rh:doc"]) || [];
             	debugService.print("dbService.parseObjects, returning: " + result);
+            	result.forEach(function(obj) {
+            		debugService.printProperties(obj);
+            	});
             	return result;
             }
+
+            function clone(source) {
+            	var copy = {};
+	        	for (var property in source) {
+	        		if (source.hasOwnProperty(property)) {
+	        			copy[property] = source[property];
+	        		}
+		        }	            	
+            	
+            	return copy;
+            }
+            
+        	function htmlEncode(value) {
+        		return $('<div/>').text(value).html();
+        	}
+        	
+        	function htmlDecode(value) {
+        		return $('<div/>').html(value).text();
+        	}
+        	
 
         }]
     );

@@ -1,0 +1,39 @@
+select.projectMargins, input.projectMargins, input[type="text"].projectMargins, button.projectMargins {
+	padding : 1px 1px;
+	margin : 1px 1px;
+	height: 26px;
+	line-height: 20px;
+}
+
+select.mediumWidth {
+	width : 100px
+}
+
+input[type="text"].mediumWidth {
+	width : 140px;
+}
+
+select.narrow, input[type="text"].tiny {
+	width : 50px
+}
+
+input[type="text"].short {
+	width : 100px
+}
+
+div.textContent {
+	padding: 10px 10px;
+}
+
+table.spaced {
+	border-spacing : 4px;
+	border-collapse: separate;
+}
+
+th.spaced, td.spaced {
+	padding : 1px;
+}
+
+button.rightAlign {
+	float: right;
+}

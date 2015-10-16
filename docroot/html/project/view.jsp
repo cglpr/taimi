@@ -67,10 +67,10 @@
 				<table class="table-striped">
 					<thead>
 						<tr>
-							<th>Projektin nimi</th>
-							<th>Koko/kEUR</th>
-							<th>Teknologiat</th>
-							<th>Asiakas</th>
+							<th>{{ projFields.name }}</th>
+							<th>{{ projFields.sizeKiloEuros }}</th>
+							<th>{{ projFields.techs }}</th>
+							<th>{{ projFields.customer }}</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -87,7 +87,93 @@
 		</div>
 	</liferay-ui:section>
 	<liferay-ui:section>
-		<p>Tässä tabissa haetaan projekteja</p>
+		<div class="page-header">
+			<h2>Hae projekteja</h2>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading "><h4>Hakuehdot</h4></div>
+			<div class="panel-body">
+
+				<div class="row">
+					<div class="col-md-3">Kenttä</div> 
+					<div class="col-md-3">Ehto</div> 
+					<div class="col-md-3">Arvo</div> 
+		   		</div>
+				<div class="row">
+					<div class="col-md-3">
+						<select ng-model="currentTerms.field" name="searchField" class="projectMargins mediumWidth">
+						<option ng-repeat="field in projFields" value="{{field}}" class="projectMargins mediumWidth">{{field}}</option>
+						</select>
+					</div> 
+					<div class="col-md-3">
+						<select ng-model="currentTerms.oper" name="searchOper" class="projectMargins mediumWidth">
+						<option ng-repeat="oper in operators" value="{{oper}}" class="projectMargins mediumWidth">{{oper}}</option>
+						</select>
+					</div> 
+					<div class="col-md-4">
+						<input type="text" ng-model="currentTerms.value" name="searchValue" class="projectMargins mediumWidth" />
+					</div> 
+					<div class="col-md-2">
+						<button type="button" class="btn btn-default btn-sm" ng-click="addTerms(currentTerms)" class="projectMargins">
+			          	<span class="glyphicon glyphicon-plus-sign"></span>
+			        	</button>
+					</div>
+		   		</div>
+		   		<div  class="textContent">
+					<div ng-repeat="myterm in termsList">
+						<div class="row">
+							<div class="col-md-8">{{ termsToString(myterm) }}</div>
+							<div class="col-md-2">
+								<select ng-model="termsList[$index].joinOper" name="joinOper" class="projectMargins narrow"
+									ng-init="joinOperators[0]">
+								<option ng-repeat="oper in joinOperators" value="{{oper}}">{{oper}}</option>
+								</select>
+							</div>
+							<div class="col-md-2">
+								<button type="button" class="btn btn-default btn-sm projectMargins rightAlign" ng-click="removeTerms($index)">
+					          	<span class="glyphicon glyphicon-minus-sign"></span>
+					        	</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-3">
+						<button type="button" class="btn btn-default btn-sm" ng-click="searchProjects()">Hae
+			        	</button>
+					</div>
+					<div class="col-md-3">
+						<button type="button" class="btn btn-default btn-sm" ng-click="clearSearchTerms()">Tyhjenn&auml;
+			        	</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="panel panel-info">
+			<div class="panel-heading "><h4>Hakutulokset</h4></div>
+			<div class="panel-body">
+				<div class="table-responsive">
+				<table class="table-striped spaced">
+					<thead>
+						<tr>
+							<th class="spaced">{{ projFields.name }}</th>
+							<th class="spaced">{{ projFields.sizeKiloEuros }}</th>
+							<th class="spaced">{{ projFields.techs }}</th>
+							<th class="spaced">{{ projFields.customer }}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="proj in projSearchResults">
+							<td class="spaced">{{ proj.name }}</td>
+							<td class="spaced">{{ proj.sizeKiloEuros}}</td>
+							<td class="spaced">{{ proj.techs | shorten }}</td>
+							<td class="spaced">{{ proj.customer }}</td>
+						</tr>
+					</tbody>
+				</table>
+				</div>
+			</div>
+		</div>
 	</liferay-ui:section>
 	</liferay-ui:tabs>
 	</form>

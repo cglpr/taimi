@@ -1,4 +1,12 @@
 (function(Liferay, angular) {
+	function htmlEncode(value) {
+		return $('<div/>').text(value).html();
+	}
+	
+	function htmlDecode(value) {
+		return $('<div/>').html(value).text();
+	}
+	
 	angular.portlet.add("LiferayPlayground-portlet", "projectportlet",
 		function() {
 			var projModule = angular.module("projModule", ['debugModule', 'serviceModule']);
@@ -23,9 +31,20 @@
 				// TODO: set username and password of the current user (how to get user credentials from liferay?)
 				dbService.setUsernameAndPassword('a', 'a');
 				
+				$scope.projFields = {
+					name : 'Projektin nimi',
+					sizeKiloEuros : 'Koko/kEUR',
+					techs : 'Teknologiat',
+					customer : 'Asiakas'
+				}
 				$scope.projList = [];
 				$scope.techList = [];
+				$scope.projSearchResults = [];
 				$scope.newTech = null;
+				$scope.currentTerms = initTerms();
+				$scope.termsList = [];
+				$scope.operators = dbService.getOperators();
+				$scope.joinOperators = dbService.getJoinOperators();
 
 				initTechs();
 				initProjects();
@@ -51,12 +70,45 @@
 
 				};
 
+				$scope.addTerms = function(terms) {
+					debugService.print("in addTerms termsList.length: " + $scope.termsList.length);
+					if(terms){
+						debugService.print("in addTerms if: " + $scope.termsToString(terms));
+						debugService.printProperties(terms);
+						$scope.termsList.push(terms);
+					}
+					debugService.print("in the end of addTerms termsList.length: " + $scope.termsList.length);
+					$scope.currentTerms = initTerms();
+				};
+
+				$scope.removeTerms = function(index) {
+					$scope.termsList.splice(index, 1);					
+				}
+				
+				$scope.clearSearchTerms = function() {
+					$scope.termsList.length = 0;
+				}
+				
+				$scope.searchProjects = function() {
+					debugService.print("searchProjects begin");
+					dbService.searchProjects($scope.termsList).then(searchProjectsSuccess, searchProjectsError);
+					debugService.print("searchProjects end");
+				}
+				
+				$scope.termsToString = function(terms) {
+					return terms.field + " " + terms.oper + " " + terms.value;
+				}
+				
 				function initTechs() {
 					dbService.getTechs().then(getTechsSuccess, getTechsError);					
 				}
 				
 				function initProjects() {
 					dbService.getProjects().then(getProjectsSuccess, getProjectsError);					
+				}
+				
+				function initTerms() {
+					return {field : '', oper : '', value : '', joinOper : ''};
 				}
 				
 				function getTechsSuccess(result) {
@@ -84,6 +136,22 @@
 				function getProjectsError(result) { // TODO: where to put the error msg?
 					debugService.print("in getProjectsError, result: " + result);
 					$scope.projList = [result || ""];						
+				}
+				
+				function searchProjectsSuccess(result) {
+					debugService.print("in searchProjectsSuccess cb, result: " + result);
+					if(result) {
+						result.forEach(function(elem) {
+							debugService.print("Project's properties:");
+							debugService.printProperties(elem);							
+						});
+					}
+					$scope.projSearchResults = result;					
+				}
+				
+				function searchProjectsError(result) { // TODO: where to put the error msg?
+					debugService.print("in searchProjectsError, result: " + result);
+					$scope.projSearchResults = [result || ""];						
 				}
 				
 				function addTechSuccess(result) {
