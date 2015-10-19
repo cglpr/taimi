@@ -158,7 +158,7 @@
 
            function createCombinedQuery(termsList) {
 				debugService.print("dbService.createCombinedQuery begin");
-            	var op = '$' + (termsList[0].joinOperator || "and").toLowerCase();
+            	var op = '$' + (termsList[0].joinOper || "and").toLowerCase();
             	var queryTerms = [];
             	var aTerm;
             	var result = {};
