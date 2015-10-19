@@ -156,7 +156,7 @@
             
             function updateUserProfile(profile) {
             	debugService.print("updateProfile called");
-            	return updateDocumentInCollection('persons', profile, profile._id.$oid);
+            	return updateDocumentInCollection('persons', profile, profile._etag.$oid);
             }
             
             function createUserProfile(profile) {

@@ -12,8 +12,9 @@
 				$scope.empList = [];
 				$scope.techList = [];
 				
-				//$scope.userId = '561254228d6af5b5886cbf61';
-				$scope.userId = '3232';
+				// TODO fetch user Id from portal user object (or something like that...).
+				$scope.userId = '5624b40a43aac11a9d875c32';
+				$scope.existingProfile = false;
 				
 				getProfile($scope.userId);				
 				initTechs();
@@ -37,8 +38,7 @@
 				
 				$scope.save = function() {
 					$log.debug("Tallennus käynnissä. $scope.currentEmployee: ", $scope.currentEmployee);
-					var existingProfile = false;
-					if (existingProfile) {
+					if ($scope.existingProfile) {
 						dbService.updateUserProfile($scope.currentEmployee).then(saveProfileSuccess, saveProfileError);
 					} else {
 						dbService.createUserProfile($scope.currentEmployee).then(createProfileSuccess, createProfileError);
@@ -73,13 +73,13 @@
 				function getProfileSuccess(result) {
 					debugService.print("in getProfileSuccess, result: " + result);
 					$scope.currentEmployee = result;
-					$scope.currentEmployee.name = result.firstName + " " + result.lastName;
+					$scope.existingProfile = true;
 				}
 				
 				function getProfileError(result) {
 					// We optimistically assume that the user profile does not yet exist.
 					debugService.print("in getProfileError. Assuming user profile does not exist in db. ");
-					$scope.currentEmployee = {firstName: "", lastName: "", age: "", streetAddress: "", postalNumber: "", city: "", skills: []};
+					$scope.currentEmployee = {name: "", age: "", streetAddress: "", postalNumber: "", city: "", skills: []};
 					return;
 				}
 				
