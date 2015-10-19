@@ -35,6 +35,8 @@
                 getProjects: getProjects,
                 getTechs: getTechs,
                 getUserProfile: getUserProfile,
+                updateUserProfile: updateUserProfile,
+                createUserProfile: createUserProfile,
                 getSkillLevels: getSkillLevels,
                 removeProject: removeProject,
                 searchProjects: searchProjects,
@@ -152,6 +154,16 @@
             	return searchCollection('projects', query);
             }
             
+            function updateUserProfile(profile) {
+            	debugService.print("updateProfile called");
+            	return updateDocumentInCollection('persons', profile, profile._id.$oid);
+            }
+            
+            function createUserProfile(profile) {
+            	debugService.print("createUserProfile called");
+            	return addToCollection('persons', profile);
+            }
+            
             // ---
             // PRIVATE METHODS.
             // ---
@@ -251,6 +263,20 @@
                     data: doc
                 };
             	addAuthData(reqObject);
+            	var request = $http(reqObject);
+                return( request.then( handleAddSuccess, handleError ) );
+            }
+            
+            function updateDocumentInCollection( collection, doc, etag ) {
+            	debugService.print("dbService.updateDocumentInCollection called with param: " + collection + " and: " + doc);
+            	var json_doc = JSON.stringify(doc);
+                var reqObject = {
+                    method: "put",
+                    url: "http://localhost:8090/lrskillz/" + collection,
+                    data: doc
+                };
+            	addAuthData(reqObject);
+            	reqObject.headers['If-Match'] = etag;
             	var request = $http(reqObject);
                 return( request.then( handleAddSuccess, handleError ) );
             }

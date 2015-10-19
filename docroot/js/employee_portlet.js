@@ -12,16 +12,12 @@
 				$scope.empList = [];
 				$scope.techList = [];
 				
-				$scope.userId = '561254228d6af5b5886cbf61';
+				//$scope.userId = '561254228d6af5b5886cbf61';
+				$scope.userId = '3232';
 				
 				getProfile($scope.userId);				
 				initTechs();
 				initSkillLevels();
-				
-				//$scope.skillLevels = [{id: '1', name: 'Aloittelija'}, {id: '2', name: 'Kokenut'}, {id: '3', name: 'Asiantuntija'}];
-				//$scope.currentEmployee.skills = [$scope.techList[0]];
-				
-				//$scope.currentEmployee.skills[0].level = $scope.skillLevels[0];
 				
 				$scope.removeSkill = function(skill) {
 					var index = $scope.currentEmployee.skills.indexOf(skill);
@@ -36,11 +32,38 @@
 					var newSkillObject = jQuery.extend(true, {}, newSkill);
 					//newSkillObject.level = JSON.parse(newSkillObject.level);
 
-					$scope.currentEmployee.skills.push(newSkillObject);					
+					$scope.currentEmployee.skills.push(newSkillObject);
 				}
 				
 				$scope.save = function() {
+					$log.debug("Tallennus käynnissä. $scope.currentEmployee: ", $scope.currentEmployee);
+					var existingProfile = false;
+					if (existingProfile) {
+						dbService.updateUserProfile($scope.currentEmployee).then(saveProfileSuccess, saveProfileError);
+					} else {
+						dbService.createUserProfile($scope.currentEmployee).then(createProfileSuccess, createProfileError);
+					}
+					
+				}
+				
+				function createProfileSuccess(result) {
+					debugService.print("in createProfileSuccess");
 					flash('Profiili tallennettu.');
+				}
+				
+				function createProfileError(result) {
+					debugService.print("in createProfileError");
+					flash('Profiilin tallennus epäonnistui.');
+				}
+				
+				function saveProfileSuccess(result) {
+					debugService.print("in saveProfileSuccess");
+					flash('Profiili tallennettu.');
+				}
+				
+				function saveProfileError(result) {
+					debugService.print("in saveProfileError");
+					flash('Profiilin tallennus epäonnistui.');
 				}
 				
 				function getProfile(profileId) {
@@ -54,7 +77,9 @@
 				}
 				
 				function getProfileError(result) {
-					debugService.print("in getProfileError, result: " + result);
+					// We optimistically assume that the user profile does not yet exist.
+					debugService.print("in getProfileError. Assuming user profile does not exist in db. ");
+					$scope.currentEmployee = {firstName: "", lastName: "", age: "", streetAddress: "", postalNumber: "", city: "", skills: []};
 					return;
 				}
 				
