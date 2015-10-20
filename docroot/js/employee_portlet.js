@@ -64,7 +64,7 @@
 				
 				function createProfileSuccess(result) {
 					$log.debug("in createProfileSuccess");
-					flash('Profiili tallennettu.');
+					flash('success', 'Profiili luotu.');
 					if ($scope.existingProfile === false) {
 						$scope.existingProfile = true;
 					}
@@ -74,18 +74,21 @@
 				
 				function createProfileError(result) {
 					$log.debug("in createProfileError");
-					flash('Profiilin tallennus epäonnistui.');
+					flash('error', 'Profiilin luonti epäonnistui.');
 				}
 				
 				function saveProfileSuccess(data, status, headers, config) {
+					// We need to get the profile again, because the _etag has been updated.
+					getProfile($scope.userId);
+					
 					$log.debug("in saveProfileSuccess");
-					flash('Profiili tallennettu.');
+					flash('success', 'Profiili tallennettu.');
 				}
 				
 				function saveProfileError(result) {
 					$log.debug("in saveProfileError");
 					
-					flash('Profiilin tallennus epäonnistui.');
+					flash('error', 'Profiilin tallennus epäonnistui.');
 				}
 				
 				function getProfile(profileId) {

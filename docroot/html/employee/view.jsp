@@ -106,7 +106,7 @@
 				</div>
 			</div>
 			
-			<flash:messages class="slide-down" ng:show="messages"></flash:messages>
+			<flash:messages class="slide-down"></flash:messages>
 			
 		</form>
 	</div>
