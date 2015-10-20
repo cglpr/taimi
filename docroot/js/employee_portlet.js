@@ -13,8 +13,7 @@
 				$scope.techList = [];
 				
 				// TODO fetch user Id from portal user object (or something like that...).
-				//$scope.userId = '5624b40a43aac11a9d875c32';
-				$scope.userId = "5624bb5b43aac11a9d875c36";
+				$scope.userId = "MockUser";
 				$scope.existingProfile = false;
 				
 				getProfile($scope.userId);
@@ -32,7 +31,6 @@
 					}
 					// We need to copy object, so we get a new object.
 					var newSkillObject = jQuery.extend(true, {}, newSkill);
-					//newSkillObject.level = JSON.parse(newSkillObject.level);
 
 					$scope.currentEmployee.skills.push(newSkillObject);
 				}
@@ -46,6 +44,7 @@
 						dbService.updateUserProfile(newProfileArray, $scope.currentEmployee._id.$oid, $scope.currentEmployee._etag.$oid).then(saveProfileSuccess, saveProfileError);
 					} else {
 						$log.debug("Creating new user profile with array: ", $scope.currentEmployee);
+						$scope.currentEmployee.userId = $scope.userId;
 						dbService.createUserProfile($scope.currentEmployee).then(createProfileSuccess, createProfileError);
 					}
 					
@@ -53,6 +52,7 @@
 				
 				function createNewProfileArray(existingProfile) {
 					var profileArray = {};
+					profileArray.userId = existingProfile.userId;
 					profileArray.name = existingProfile.name;
 					profileArray.age = existingProfile.age;
 					profileArray.streetAddress = existingProfile.streetAddress;
@@ -69,8 +69,7 @@
 						$scope.existingProfile = true;
 					}
 					
-					// TODO GET created profile.
-					//getProfile($scope.userId);
+					getProfile($scope.userId);
 				}
 				
 				function createProfileError(result) {
@@ -94,14 +93,20 @@
 				}
 				
 				function getProfileSuccess(result) {
-					$log.debug("in getProfileSuccess, result: " + result);
-					$scope.currentEmployee = result;
-					$scope.existingProfile = true;
+					$log.debug("in getProfileSuccess, result: ", result);
+					
+					// Success does not mean that the profile was found. 
+					// In either case a result array is returned.
+					if (result['rh:doc'].length > 0) {
+						$scope.currentEmployee = result['rh:doc'][0];
+						$scope.existingProfile = true;
+					} else {
+						$scope.currentEmployee = {name: "", age: "", streetAddress: "", postalNumber: "", city: "", skills: []};
+					}
 				}
 				
 				function getProfileError(result) {
-					// We optimistically assume that the user profile does not yet exist.
-					debugService.print("in getProfileError. Assuming user profile does not exist in db. ");
+					$log.error("getProfileError, result: ", result);
 					$scope.currentEmployee = {name: "", age: "", streetAddress: "", postalNumber: "", city: "", skills: []};
 					return;
 				}

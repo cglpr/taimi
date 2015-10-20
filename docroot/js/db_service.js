@@ -112,7 +112,7 @@
             
             function getUserProfile(userId) {
             	debugService.print("dbService.getUserProfile called with userId: " + userId);
-            	return getWithCollectionAndId('persons', userId);
+            	return getWithCollectionAndUserId('persons', userId);
             }
 
             function getOperators() {
@@ -212,18 +212,19 @@
             	return 'filter=' + JSON.stringify(result);
             }
             
-            function getWithCollectionAndId(collection, id) {
-            	debugService.print("dbService.getWithCollectionAndId called  with collection: " + collection + " and id: " + id);
+            function getWithCollectionAndUserId(collection, userId) {
+            	debugService.print("dbService.getWithCollectionAndUserId called  with collection: " + collection 
+            		+ " and userId: " + userId);
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id,
+                    url: "http://localhost:8090/lrskillz/" + collection + "?filter={'userId':{'$eq': '" + userId + "'}}",
                     params: {
                         action: "get"
                     }            			
             	};
             	addAuthData(reqObject);
             	var request = $http(reqObject);
-                return( request.then( handleGetWithCollectionAndIdSuccess, handleError ) );
+                return( request.then( handleGetWithCollectionAndUserIdSuccess, handleError ) );
             }
             
             function getCollection( collection ) {
@@ -342,11 +343,14 @@
                 return( $q.reject( response.data.message ) );
             }
 
-            function handleGetWithCollectionAndIdSuccess( response ) {
+            function handleGetWithCollectionAndUserIdSuccess( response ) {
             	debugService.print("dbService.handleGetWithCollectionAndIdSuccess");
+            	
+            	$log.debug("Response object: ", response);
+            	
             	var token = response.headers('Auth-Token');
             	setAuthData(token);
-                return(response.data);
+                return(response.data._embedded);
             }
             
             function handleGetCollectionSuccess( response ) {
