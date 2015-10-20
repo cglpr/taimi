@@ -6,7 +6,7 @@
 	// I act a repository for the remote friend collection.
     app.service(
         "dbService",
-        ['$http', '$q', 'debugService', function( $http, $q, debugService ) {
+        ['$http', '$log', '$q', 'debugService', function( $http, $log, $q, debugService ) {
         	var authData = null;
         	// TODO: authToken validity time should be registered and should be cleared when it expires
         	var authToken = null;
@@ -154,9 +154,9 @@
             	return searchCollection('projects', query);
             }
             
-            function updateUserProfile(profile) {
+            function updateUserProfile(profile, id, etag) {
             	debugService.print("updateProfile called");
-            	return updateDocumentInCollection('persons', profile, profile._etag.$oid);
+            	return updateDocumentInCollection('persons', profile, id, etag);
             }
             
             function createUserProfile(profile) {
@@ -267,18 +267,21 @@
                 return( request.then( handleAddSuccess, handleError ) );
             }
             
-            function updateDocumentInCollection( collection, doc, etag ) {
+            function updateDocumentInCollection( collection, doc, id, etag ) {
             	debugService.print("dbService.updateDocumentInCollection called with param: " + collection + " and: " + doc);
             	var json_doc = JSON.stringify(doc);
                 var reqObject = {
                     method: "put",
-                    url: "http://localhost:8090/lrskillz/" + collection,
+                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id,
                     data: doc
                 };
             	addAuthData(reqObject);
             	reqObject.headers['If-Match'] = etag;
+            	
+            	$log.debug("reqObject: ", reqObject);
+            	
             	var request = $http(reqObject);
-                return( request.then( handleAddSuccess, handleError ) );
+                return( request.then( handleUpdateSuccess, handleError ) );
             }
             
             // Used for collections the documents of which contain 'name' as a property:
@@ -327,7 +330,8 @@
             }
             
             function handleError( response ) {
-            	debugService.print("dbService.handleError: " + response);
+            	debugService.print("dbService.handleError: ");
+            	printProperties(response);
                 if (
                     ! angular.isObject( response.data ) ||
                     ! response.data.message
@@ -380,6 +384,17 @@
             	setAuthData(token);
             	var result = parseObjects(response.data);
                 return( result );
+            }
+            
+            function handleUpdateSuccess( response ) {
+            	debugService.print("dbService.handleUpdateSuccess");
+
+            	var token = response.headers('Auth-Token');
+            	setAuthData(token);
+            	debugService.print("dbService.handleUpdateSuccess, response: " + response + " and properties:");
+            	debugService.printProperties(response);
+            	// return just empty object in succesful case:
+                return( {} );
             }
             
             function handleAddSuccess( response ) {

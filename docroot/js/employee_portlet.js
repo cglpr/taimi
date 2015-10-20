@@ -13,10 +13,11 @@
 				$scope.techList = [];
 				
 				// TODO fetch user Id from portal user object (or something like that...).
-				$scope.userId = '5624b40a43aac11a9d875c32';
+				//$scope.userId = '5624b40a43aac11a9d875c32';
+				$scope.userId = "5624bb5b43aac11a9d875c36";
 				$scope.existingProfile = false;
 				
-				getProfile($scope.userId);				
+				getProfile($scope.userId);
 				initTechs();
 				initSkillLevels();
 				
@@ -37,32 +38,54 @@
 				}
 				
 				$scope.save = function() {
-					$log.debug("Tallennus käynnissä. $scope.currentEmployee: ", $scope.currentEmployee);
 					if ($scope.existingProfile) {
-						dbService.updateUserProfile($scope.currentEmployee).then(saveProfileSuccess, saveProfileError);
+						// Existing profile has RESTHeart fields like _id and _embedded and we must not send them (it generates errors).
+						var newProfileArray = createNewProfileArray($scope.currentEmployee);
+						$log.debug("Updating existing profile with array: ", newProfileArray);
+						$log.debug(" and etag: ", $scope.currentEmployee._etag.$oid);
+						dbService.updateUserProfile(newProfileArray, $scope.currentEmployee._id.$oid, $scope.currentEmployee._etag.$oid).then(saveProfileSuccess, saveProfileError);
 					} else {
+						$log.debug("Creating new user profile with array: ", $scope.currentEmployee);
 						dbService.createUserProfile($scope.currentEmployee).then(createProfileSuccess, createProfileError);
 					}
 					
 				}
 				
+				function createNewProfileArray(existingProfile) {
+					var profileArray = {};
+					profileArray.name = existingProfile.name;
+					profileArray.age = existingProfile.age;
+					profileArray.streetAddress = existingProfile.streetAddress;
+					profileArray.postalNumber = existingProfile.postalNumber;
+					profileArray.city = existingProfile.city;
+					profileArray.skills = existingProfile.skills;
+					return profileArray;
+				}
+				
 				function createProfileSuccess(result) {
-					debugService.print("in createProfileSuccess");
+					$log.debug("in createProfileSuccess");
 					flash('Profiili tallennettu.');
+					if ($scope.existingProfile === false) {
+						$scope.existingProfile = true;
+					}
+					
+					// TODO GET created profile.
+					//getProfile($scope.userId);
 				}
 				
 				function createProfileError(result) {
-					debugService.print("in createProfileError");
+					$log.debug("in createProfileError");
 					flash('Profiilin tallennus epäonnistui.');
 				}
 				
-				function saveProfileSuccess(result) {
-					debugService.print("in saveProfileSuccess");
+				function saveProfileSuccess(data, status, headers, config) {
+					$log.debug("in saveProfileSuccess");
 					flash('Profiili tallennettu.');
 				}
 				
 				function saveProfileError(result) {
-					debugService.print("in saveProfileError");
+					$log.debug("in saveProfileError");
+					
 					flash('Profiilin tallennus epäonnistui.');
 				}
 				
@@ -71,7 +94,7 @@
 				}
 				
 				function getProfileSuccess(result) {
-					debugService.print("in getProfileSuccess, result: " + result);
+					$log.debug("in getProfileSuccess, result: " + result);
 					$scope.currentEmployee = result;
 					$scope.existingProfile = true;
 				}
@@ -98,8 +121,9 @@
 					});					
 				}
 				
-				function getTechsError(result) { // TODO: where to put the error msg?
-					$scope.techList = [result || ""];						
+				function getTechsError(result) {
+					$scope.techList = [result || ""];
+					$log.error("getTechsError, result: ", result);
 				}
 				
 				function getSkillLevelsSuccess(result) {
@@ -110,17 +134,18 @@
 					
 				}
 				
-				function getSkillLevelsError(result) { // TODO: where to put the error msg?
-					$scope.skillLevels = [result || ""];						
+				function getSkillLevelsError(result) {
+					$scope.skillLevels = [result || ""];
+					$log.error("getSkillLevelsError, result: ", result);
 				}
 				
 				function addTechSuccess(result) {
-					debugService.print("in addTechSuccess cb");
+					$log.debug("in addTechSuccess");
 					initTechs();				
 				}
 				
-				function addTechError(result) { // TODO: where to put the error msg?
-					debugService.print("in addTechsError, result: " + result);
+				function addTechError(result) {
+					$log.error("addTechsError, result: " , result);
 				}				
 				
 			}]);

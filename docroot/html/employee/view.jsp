@@ -99,7 +99,10 @@
 			</div>
 			
 			<div class="row">
-				<div class="col-md-6"><button class="btn btn-default" type="button" ng-click="save()">Tallenna muutokset</button>
+				
+				<div class="col-md-6" ng-if="existingProfile === true"><button class="btn btn-default" type="button" ng-click="save()">Päivitä käyttäjäprofiili</button>
+				</div>
+				<div class="col-md-6" ng-if="existingProfile === false"><button class="btn btn-default" type="button" ng-click="save()">Luo käyttäjäprofiili</button>
 				</div>
 			</div>
 			
