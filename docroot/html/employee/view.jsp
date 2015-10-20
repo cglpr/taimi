@@ -57,7 +57,9 @@
 			    		</div>
 					</div> 
 				</div>
-			</div>	
+			</div>
+			
+			<flash:messages class="slide-down" ng-show="messages"></flash:messages>	
 			
 			<div class="panel panel-info">
 				<div class="panel-heading"><h4>Tekninen osaaminen:</h4></div>
@@ -106,7 +108,7 @@
 				</div>
 			</div>
 			
-			<flash:messages class="slide-down"></flash:messages>
+			
 			
 		</form>
 	</div>

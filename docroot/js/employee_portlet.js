@@ -1,7 +1,7 @@
 (function(Liferay, angular) {
 	angular.portlet.add("LiferayPlayground-portlet", "employeeportlet",
 		function() {
-			var empModule = angular.module("empModule", ['flash', 'debugModule', 'serviceModule']);
+			var empModule = angular.module("empModule", ['flash', 'debugModule', 'serviceModule', 'ngAnimate']);
 			
 			empModule.controller("EmployeeController", ["$scope", "$log", "$filter", "flash", "debugService", "dbService", 
 			                                            function($scope, $log, $filter, flash, debugService, dbService) {
