@@ -13,7 +13,7 @@ function fetchJSONFile(path, callback) {
 };
 
 function drawChart() {  // When HTML DOM "click" event is invoked on element with ID "somebutton", execute the following function...
-	fetchJSONFile('/TaimiBackend/rest/techdata/demand', function(responseText){
+	fetchJSONFile('/TaimiBackend/rest/skilldemand/googlechart', function(responseText){
         var data = new google.visualization.DataTable(responseText);
 
         var options = {
