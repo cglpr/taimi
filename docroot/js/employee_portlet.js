@@ -12,8 +12,6 @@
 				$scope.empList = [];
 				$scope.techList = [];
 				
-				// TODO fetch user Id from portal user object (or something like that...).
-				$scope.userId = "MockUser";
 				$scope.existingProfile = false;
 				
 				getProfile($scope.userId);
@@ -26,11 +24,18 @@
 				}
 				
 				$scope.addSkill = function(newSkill) {
+					$log.debug("addSkill called, newSkill: ", newSkill);
+					
 					if (newSkill.level === '' || newSkill.name === '') {
 						return;
 					}
 					// We need to copy object, so we get a new object.
 					var newSkillObject = jQuery.extend(true, {}, newSkill);
+					
+					// Make sure the person object has skill attribute. If not, create one.
+					if(!$scope.currentEmployee.hasOwnProperty("skills")){
+					    $scope.currentEmployee.skills = [];
+					}
 
 					$scope.currentEmployee.skills.push(newSkillObject);
 				}

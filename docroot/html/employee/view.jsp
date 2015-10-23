@@ -1,17 +1,24 @@
 <%@ taglib uri="http://java.sun.com/portlet_2_0" prefix="portlet"%>
 <%@ taglib uri="http://liferay.com/tld/ui" prefix="liferay-ui" %>
 <%@ taglib prefix="liferay-util" uri="http://liferay.com/tld/util" %>
+<%@page import="com.liferay.portal.kernel.util.WebKeys"%>
+<%@page import="com.liferay.portal.model.User"%>
 
 <portlet:defineObjects />
 
-<div>
+<%
+	// FIXME: Move this to backing portlet (could not get backing portlet to work).
+	User user = (User) request.getAttribute(WebKeys.USER);
+%>
+
+<div ng-init="userId='<%=user.getUserId()%>';">
 	<liferay-ui:tabs names="Muokkaa profiilia" refresh="false" tabsValues="Muokkaa profiilia">
 	<liferay-ui:section>
 	<div class="page-header">
 		<h1>Työntekijän profiili</h1>
 	</div>
-
-	<div ng-controller="EmployeeController">
+	
+	<div ng-controller="EmployeeController" >
 		<form name="form" novalidate class="css-form">
 
 			<div class="panel panel-info">
@@ -112,6 +119,7 @@
 			
 		</form>
 	</div>
+	
 	</liferay-ui:section>
 	</liferay-ui:tabs>
 </div>
