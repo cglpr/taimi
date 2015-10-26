@@ -6,7 +6,7 @@
 			empModule.controller("EmployeeController", ["$scope", "$log", "$filter", "flash", "debugService", "dbService", 
 			                                            function($scope, $log, $filter, flash, debugService, dbService) {
 				debugService.setDebugging(true);
-				// TODO: set username and password of the current user (how to get user credentials from liferay?)
+				
 				dbService.setUsernameAndPassword('a', 'a');
 				
 				$scope.empList = [];
@@ -24,8 +24,6 @@
 				}
 				
 				$scope.addSkill = function(newSkill) {
-					$log.debug("addSkill called, newSkill: ", newSkill);
-					
 					if (newSkill.level === '' || newSkill.name === '') {
 						return;
 					}
@@ -44,11 +42,8 @@
 					if ($scope.existingProfile) {
 						// Existing profile has RESTHeart fields like _id and _embedded and we must not send them (it generates errors).
 						var newProfileArray = createNewProfileArray($scope.currentEmployee);
-						$log.debug("Updating existing profile with array: ", newProfileArray);
-						$log.debug(" and etag: ", $scope.currentEmployee._etag.$oid);
 						dbService.updateUserProfile(newProfileArray, $scope.currentEmployee._id.$oid, $scope.currentEmployee._etag.$oid).then(saveProfileSuccess, saveProfileError);
 					} else {
-						$log.debug("Creating new user profile with array: ", $scope.currentEmployee);
 						$scope.currentEmployee.userId = $scope.userId;
 						dbService.createUserProfile($scope.currentEmployee).then(createProfileSuccess, createProfileError);
 					}
@@ -68,7 +63,6 @@
 				}
 				
 				function createProfileSuccess(result) {
-					$log.debug("in createProfileSuccess");
 					flash('success', 'Profiili luotu.');
 					if ($scope.existingProfile === false) {
 						$scope.existingProfile = true;
@@ -78,7 +72,6 @@
 				}
 				
 				function createProfileError(result) {
-					$log.debug("in createProfileError");
 					flash('error', 'Profiilin luonti epäonnistui.');
 				}
 				
@@ -86,13 +79,10 @@
 					// We need to get the profile again, because the _etag has been updated.
 					getProfile($scope.userId);
 					
-					$log.debug("in saveProfileSuccess");
 					flash('success', 'Profiili tallennettu.');
 				}
 				
 				function saveProfileError(result) {
-					$log.debug("in saveProfileError");
-					
 					flash('error', 'Profiilin tallennus epäonnistui.');
 				}
 				
@@ -101,8 +91,6 @@
 				}
 				
 				function getProfileSuccess(result) {
-					$log.debug("in getProfileSuccess, result: ", result);
-					
 					// Success does not mean that the profile was found. 
 					// In either case a result array is returned.
 					if (result['rh:doc'].length > 0) {

@@ -6,12 +6,13 @@
 	// I act a repository for the remote friend collection.
     app.service(
         "dbService",
-        ['$http', '$log', '$q', 'debugService', function( $http, $log, $q, debugService ) {
+        ['$http', '$log', '$q', 'debugService', function($http, $log, $q, debugService ) {
         	var authData = null;
         	// TODO: authToken validity time should be registered and should be cleared when it expires
         	var authToken = null;
         	var user = null;
         	var pwd = null;
+        	var currentDomain = "localhost";
 			var operators = ['>', '<', htmlDecode('sis&auml;lt&auml;&auml;'), 'alkaa', htmlDecode('p&auml;&auml;ttyy'), '=', '<=', '>='];
 			var joinOperators = ['AND', 'OR'];
 			var reverseFields = {	
@@ -43,6 +44,7 @@
                 getOperators: getOperators,
                 getJoinOperators: getJoinOperators
             });
+            
             // ---
             // PUBLIC METHODS.
             // ---
@@ -50,8 +52,9 @@
             	user = username;
             	pwd = password;
             	setAuthData();
+            	setDomain();
             }
-
+            
             //
             // All these methods that are used to query/update the db, return Promise objects,
             // so these are called for example like this:
@@ -68,10 +71,6 @@
             	return addToCollection('projects', project);
             }
             
-            function getProfile(id) {
-            	return getCollection
-            }
-            
             function removeProject( project ) {
             	debugService.print("dbService.removeProject _etag props:");
             	debugService.printProperties(project._etag);
@@ -86,7 +85,7 @@
             	debugService.print("dbService.getTechs called again");
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/techs",
+                    url: "http://" + currentDomain + ":8090/lrskillz/techs",
                     params: {
                         action: "get"
                     }            			
@@ -100,7 +99,7 @@
             	debugService.print("dbService.getSkillLevels called.");
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/skillLevels",
+                    url: "http://" + currentDomain + ":8090/lrskillz/skillLevels",
                     params: {
                         action: "get"
                     }            			
@@ -167,6 +166,28 @@
             // ---
             // PRIVATE METHODS.
             // ---
+            
+            // From: http://stackoverflow.com/questions/8498592/extract-root-domain-name-from-string
+            function extractDomain(url) {
+                var domain;
+                //find & remove protocol (http, ftp, etc.) and get domain
+                if (url.indexOf("://") > -1) {
+                    domain = url.split('/')[2];
+                }
+                else {
+                    domain = url.split('/')[0];
+                }
+
+                //find & remove port number
+                domain = domain.split(':')[0];
+
+                return domain;
+            }
+            
+            function setDomain() {
+            	// Did not intentionally use angular $location service. For some reason, it breaks flash messages.
+            	currentDomain = extractDomain(document.URL);
+            }
 
            function createCombinedQuery(termsList) {
 				debugService.print("dbService.createCombinedQuery begin");
@@ -217,7 +238,7 @@
             		+ " and userId: " + userId);
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/" + collection + "?filter={'userId':{'$eq': '" + userId + "'}}",
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection + "?filter={'userId':{'$eq': '" + userId + "'}}",
                     params: {
                         action: "get"
                     }            			
@@ -231,7 +252,7 @@
             	debugService.print("dbService.getCollection called again with param: " + collection);
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/" + collection,
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection,
                     params: {
                         action: "get"
                     }            			
@@ -245,7 +266,7 @@
             	debugService.print("dbService.searchCollection called with param: " + collection + " and " + filter);
             	var reqObject = {
                     method: "get",
-                    url: "http://localhost:8090/lrskillz/" + collection + "?" + filter,
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection + "?" + filter,
                     params: {
                         action: "get"
                     }            			
@@ -260,7 +281,7 @@
             	var json_doc = JSON.stringify(doc);
                 var reqObject = {
                     method: "post",
-                    url: "http://localhost:8090/lrskillz/" + collection,
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection,
                     data: doc
                 };
             	addAuthData(reqObject);
@@ -273,7 +294,7 @@
             	var json_doc = JSON.stringify(doc);
                 var reqObject = {
                     method: "put",
-                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id,
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection + "/" + id,
                     data: doc
                 };
             	addAuthData(reqObject);
@@ -292,7 +313,7 @@
             			+ collection + ", " + id + " and etag: " + etag);
                 var reqObject = {
                     method: "delete",
-                    url: "http://localhost:8090/lrskillz/" + collection + "/" + id
+                    url: "http://"+ currentDomain +":8090/lrskillz/" + collection + "/" + id
                 };
             	addAuthData(reqObject);
             	reqObject.headers['If-Match'] = etag;
