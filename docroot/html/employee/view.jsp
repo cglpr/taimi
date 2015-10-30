@@ -5,13 +5,18 @@
 <%@page import="com.liferay.portal.model.User"%>
 
 <portlet:defineObjects />
-
-<%
+<div ng-init="userId='<%
 	// FIXME: Move this to backing portlet (could not get backing portlet to work).
 	User user = (User) request.getAttribute(WebKeys.USER);
-%>
-
-<div ng-init="userId='<%=user.getUserId()%>';">
+	// If guest user, user instance is null.
+	if (user != null) {
+		System.out.println("Got portal user instance.");
+		out.println(user.getUserId());
+	} else {
+		System.out.println("Guest user. Using mock userId value.");
+		out.println("12345");
+	}
+%>'">
 	<liferay-ui:tabs names="Muokkaa profiilia" refresh="false" tabsValues="Muokkaa profiilia">
 	<liferay-ui:section>
 	<div class="page-header">
